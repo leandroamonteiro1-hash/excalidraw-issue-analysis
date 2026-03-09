@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exploration Log — Excalidraw Issue Analysis</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="index.html" class="site-logo">Excalidraw Issue Analysis</a>
+      <nav class="site-nav">
+        <a href="sprint-summary.html">Sprint Summary</a>
+        <a href="priority-matrix.html">Priority Matrix</a>
+        <a href="issue-brief-10882.html">Issue Brief</a>
+        <a href="exploration-log.html">Exploration Log</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <a href="index.html" class="back-link">← Back to Home</a>
+      <div class="page-label">Research · Codebase Exploration</div>
+      <h1>Codebase Exploration Log</h1>
+      <p class="meta"><strong>Date:</strong> March 8, 2026</p>
+    </div>
+
+    <article class="content">
+
+      <h2>Q&amp;A Session</h2>
+
+      <div class="qa-block">
+        <div class="qa-question">What is this project? Give me a high-level summary of what Excalidraw does and what technologies it uses.</div>
+        <div class="qa-answer">
+          <p>
+            Excalidraw is an open-source virtual whiteboard for creating hand-drawn style diagrams. It features
+            an infinite canvas, real-time collaboration with end-to-end encryption, export to PNG/SVG/JSON,
+            dark mode, and PWA offline support. Built with React 19, TypeScript, Vite, and Vitest, managed
+            as a Yarn monorepo.
+          </p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-question">What is the folder structure of this project?</div>
+        <div class="qa-answer">
+          <p>A monorepo with these key folders:</p>
+          <ul>
+            <li><code>packages/excalidraw/</code> — core npm library</li>
+            <li><code>packages/element/</code>, <code>packages/math/</code>, <code>packages/common/</code>, <code>packages/utils/</code> — supporting packages</li>
+            <li><code>excalidraw-app/</code> — the full excalidraw.com web app</li>
+            <li><code>examples/</code> — Next.js and browser integration examples</li>
+            <li><code>firebase-project/</code> — collab backend config</li>
+            <li><code>scripts/</code> — build/release automation</li>
+            <li><code>.github/</code> — CI/CD workflows</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-question">Where is the main entry point of this application? Walk me through what happens when a user opens Excalidraw in their browser.</div>
+        <div class="qa-answer">
+          <ol>
+            <li><strong><code>excalidraw-app/index.html</code></strong> — an inline script immediately applies the saved theme (no flash), then loads <code>index.tsx</code>.</li>
+            <li><strong><code>excalidraw-app/index.tsx</code></strong> — registers the service worker (PWA), mounts <code>&lt;ExcalidrawApp /&gt;</code> into <code>#root</code>.</li>
+            <li><strong><code>excalidraw-app/App.tsx</code></strong> — loads saved drawing from localStorage, checks the URL for a collaboration room, fetches room data from Firebase if needed, then renders the core <code>&lt;Excalidraw /&gt;</code> component from <code>packages/excalidraw</code>.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-question">What are the most important files in this project?</div>
+        <div class="qa-answer">
+          <p>Top 10 for new contributors:</p>
+          <ol>
+            <li><code>packages/excalidraw/components/App.tsx</code> — ~12,500 lines, handles all user interactions on the canvas.</li>
+            <li><code>packages/element/src/types.ts</code> — defines all element types (shapes, arrows, text, images).</li>
+            <li><code>packages/excalidraw/types.ts</code> — defines AppState and the public API surface.</li>
+            <li><code>packages/excalidraw/appState.ts</code> — default values for all editor state.</li>
+            <li><code>packages/element/src/Scene.ts</code> — single source of truth for all elements on the canvas.</li>
+            <li><code>packages/element/src/newElement.ts</code> — factory functions for creating elements.</li>
+            <li><code>packages/excalidraw/actions/manager.tsx</code> — centralized action system used for every operation.</li>
+            <li><code>packages/element/src/renderElement.ts</code> — draws elements onto the canvas using Rough.js.</li>
+            <li><code>packages/excalidraw/history.ts</code> — delta-based undo/redo system.</li>
+            <li><code>excalidraw-app/collab/Collab.tsx</code> — real-time collaboration via WebSocket + Firebase.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-question">How does Excalidraw handle drawing shapes? Explain the flow from when a user clicks on the canvas to when a shape appears.</div>
+        <div class="qa-answer">
+          <ol>
+            <li><strong>Tool selected</strong> — app records the active tool (e.g. rectangle).</li>
+            <li><strong>Pointer down</strong> — screen coords converted to scene coords; a new element object is created (width=0, height=0) and immediately added to the scene.</li>
+            <li><strong>Drag</strong> — element's width/height updated many times per second; snapping is calculated; canvas redraws using Rough.js (which adds the hand-drawn wobbly style).</li>
+            <li><strong>Pointer up</strong> — element is finalized, committed to history, and broadcast to collaborators if in a shared session.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-question">Can Excalidraw pick up an image directly from the internet or browser, or does it need to be saved locally?</div>
+        <div class="qa-answer">
+          <p>No local save required for most methods. Supported ways to insert images:</p>
+          <ul>
+            <li><strong>Paste a copied image</strong> (Ctrl+V) — read directly from clipboard.</li>
+            <li><strong>Paste an image URL</strong> — Excalidraw fetches and downloads it automatically.</li>
+            <li><strong>Drag from a web page</strong> — browser passes the image data directly.</li>
+            <li><strong>Image tool / drag from desktop</strong> — requires a local file.</li>
+          </ul>
+          <p>
+            All images are converted to base64 data URLs and stored in localStorage; no external URL links are kept.
+          </p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-question">Does Excalidraw have any integrated AI? If so, what is it?</div>
+        <div class="qa-answer">
+          <p>Yes, two AI features:</p>
+          <ol>
+            <li>
+              <strong>Text to Diagram (TTD)</strong> — a chat interface where you describe a diagram in plain English;
+              AI responds with Mermaid syntax which is converted to Excalidraw shapes. Includes conversation history,
+              auto-repair of broken diagrams, and rate limiting. Labeled "AI Beta".
+            </li>
+            <li>
+              <strong>Magic Frame (Wireframe to Code)</strong> — draw shapes inside a special Magic Frame, click the
+              wand button, and AI generates HTML from your wireframe. The actual AI model is not bundled — it's plugged
+              in via a callback (<code>onTextSubmit</code> / <code>generate</code>), so embedders can use any model.
+              Excalidraw.com uses its own Excalidraw+ backend.
+            </li>
+          </ol>
+          <p>A third tab offers <strong>Mermaid to Excalidraw</strong> (manual Mermaid editor, no AI).</p>
+        </div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-question">What social medias are implemented in Excalidraw, and how many accounts can I use without creating a new login?</div>
+        <div class="qa-answer">
+          <p>
+            Four social links are present: <strong>GitHub</strong>, <strong>X (Twitter)</strong>,
+            <strong>Discord</strong>, and <strong>YouTube</strong> (YouTube only in the Command Palette,
+            not the hamburger menu). There is <strong>no login or account system</strong> in the free app —
+            drawings save to localStorage, collaboration works via shareable links, and nothing requires sign-in.
+            The only "Sign up / Sign in" button redirects to Excalidraw+ (paid, separate product).
+            You can use unlimited "sessions" since there are no accounts.
+          </p>
+        </div>
+      </div>
+
+      <h2>Summary</h2>
+
+      <div class="summary-block">
+        <p>
+          Excalidraw is a well-architected open-source whiteboard built as a Yarn monorepo, with a clean separation
+          between the reusable core library (<code>packages/excalidraw</code>) and the full web application
+          (<code>excalidraw-app</code>). The drawing engine works by creating element objects on pointer-down and
+          continuously mutating them during drag, rendering everything through Rough.js to produce the signature
+          hand-drawn aesthetic.
+        </p>
+        <p>
+          Images can be inserted directly from the browser or internet via clipboard and drag-and-drop without any
+          local file required, and the app persists all data — including images as base64 — entirely in localStorage
+          with no account needed.
+        </p>
+        <p>
+          The project includes two AI features (Text to Diagram chat and Magic Frame wireframe-to-code), both designed
+          as pluggable interfaces so any LLM backend can be connected. Overall, Excalidraw prioritizes simplicity and
+          openness: no login, no forced cloud storage, real-time collaboration via encrypted shareable links, and a
+          public npm package that anyone can embed.
+        </p>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    Excalidraw Issue Analysis &mdash; Product Owner Report &mdash; March 2026
+  </footer>
+
+</body>
+</html>

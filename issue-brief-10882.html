@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Issue Brief #10882 — Excalidraw Issue Analysis</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="index.html" class="site-logo">Excalidraw Issue Analysis</a>
+      <nav class="site-nav">
+        <a href="sprint-summary.html">Sprint Summary</a>
+        <a href="priority-matrix.html">Priority Matrix</a>
+        <a href="issue-brief-10882.html">Issue Brief</a>
+        <a href="exploration-log.html">Exploration Log</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <a href="index.html" class="back-link">← Back to Home</a>
+      <div class="page-label">Deep Dive · Issue #10882</div>
+      <h1>Freehand Selection and Tap Selection Break on Tablet-Sized Screens</h1>
+      <p class="meta">
+        <span class="badge badge-p2">P2 — Medium-High Priority</span>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/excalidraw/excalidraw/issues/10882" target="_blank" rel="noopener">
+          github.com/excalidraw/excalidraw/issues/10882 ↗
+        </a>
+      </p>
+    </div>
+
+    <article class="content">
+
+      <h2>1. What Is Happening</h2>
+      <p>
+        Excalidraw offers a circle-selection tool — think of it like drawing a loop around objects on a table
+        to pick them all up at once. You draw a freehand shape around the items you want, release, and they all
+        get selected together.
+      </p>
+      <p>
+        On tablet-sized screens (or a browser window resized to tablet dimensions), this gesture misbehaves.
+        After drawing your loop, the selection either disappears immediately, flickers, or the editing bar that
+        lets you style the selected shapes fails to appear. It is as if you carefully circled a group of items
+        on a table, but the moment you lifted your hand, everything scattered back to where it was.
+      </p>
+      <p>
+        Additionally, simply tapping on an individual shape in this tablet view can undo what the circle-selection
+        just did — shapes that were grouped together get accidentally dropped from the selection when they should
+        stay highlighted.
+      </p>
+
+      <h2>2. Who Is Affected</h2>
+      <ul>
+        <li><strong>Tablet users</strong> — anyone accessing Excalidraw on an iPad, Android tablet, or a touchscreen laptop in tablet mode.</li>
+        <li><strong>Desktop users with smaller or split browser windows</strong> — if a user snaps their browser to half the screen, the app automatically adjusts its layout to fit that size, triggering the same bug.</li>
+        <li><strong>Teachers, presenters, and visual thinkers</strong> who rely on quickly grouping and styling multiple shapes at once are hit hardest, since the circle-selection tool is their primary way of selecting many shapes in one gesture.</li>
+      </ul>
+      <div class="callout">
+        This is not a rare edge case. Tablet usage of diagramming tools is very common, and working with the
+        browser taking up only part of the screen is a daily habit for many laptop users.
+      </div>
+
+      <h2>3. Visual Description</h2>
+      <p>Here is what a user experiences, step by step:</p>
+      <ol>
+        <li>Open Excalidraw on a tablet or resize the browser window to roughly half the screen width.</li>
+        <li>Draw several shapes on the canvas — rectangles, arrows, text.</li>
+        <li>Select the <strong>circle-selection tool</strong> (the freehand loop icon in the toolbar).</li>
+        <li>Hold your finger or mouse button down and draw a loop around a group of shapes.</li>
+        <li><strong>Lift your finger or release the mouse button.</strong></li>
+        <li><strong>Notice:</strong> the shapes you just circled are no longer highlighted — the selection vanishes, or the editing bar that should appear (letting you change color, size, etc.) does not show up.</li>
+        <li>Try tapping a single shape instead — it selects correctly.</li>
+        <li>Now try the circle-selection again — the previously tapped shape gets dropped from the selection unexpectedly.</li>
+      </ol>
+      <p>The experience feels unreliable and unpredictable, making it hard to trust the tool.</p>
+
+      <h2>4. Why It Matters</h2>
+      <p>
+        Picture a teacher leading a remote class. She is using her iPad to sketch a diagram — boxes, arrows,
+        labels. She wants to recolor a whole section of the diagram at once, so she draws a loop around it with
+        her finger. Nothing stays selected. She tries again. Still nothing. Thirty seconds pass. Her students are
+        watching. She gives up and changes each shape one by one.
+      </p>
+      <p>
+        That moment of friction is not just an inconvenience — it is a quiet vote of no confidence in the tool.
+        And it happens every time a tablet user tries to do something that should be natural and instant.
+      </p>
+      <p>This matters for three concrete reasons:</p>
+      <ul>
+        <li>
+          <strong>Lost time adds up.</strong> Every failed selection means extra taps, extra retries, extra frustration.
+          For users who work in Excalidraw for hours a day — teachers, designers, meeting facilitators — this is
+          death by a thousand cuts.
+        </li>
+        <li>
+          <strong>Tablets are not a niche.</strong> iPad and Android tablet usage for creative and educational work
+          has grown steadily. Many laptop users also trigger this bug without realizing it, simply by working with
+          a half-screen browser window. This reaches far more people than just dedicated tablet users.
+        </li>
+        <li>
+          <strong>First impressions are lasting.</strong> Users who hit this bug early in their experience with
+          Excalidraw often assume the tool is unreliable. They may not report it — they just quietly stop using
+          it, or tell a colleague it "felt glitchy." That reputation is hard to recover.
+        </li>
+      </ul>
+
+      <h2>5. Proposed Solution (Simplified)</h2>
+      <p>
+        The fix would ensure that the tablet view of Excalidraw respects the circle-selection the same way the
+        desktop view does. Specifically:
+      </p>
+      <ul>
+        <li>When you finish drawing a loop on a tablet, the selected shapes stay selected — they do not disappear.</li>
+        <li>The editing bar appears reliably after a circle-selection, just like it does on desktop.</li>
+        <li>Tapping a single shape no longer accidentally clears what you just selected with the loop.</li>
+      </ul>
+      <p>
+        From a user's perspective: <strong>circle-selection would simply work the same way on a tablet as it does
+        on a desktop computer.</strong>
+      </p>
+
+      <h2>6. Priority Recommendation</h2>
+      <div class="callout">
+        <strong><span class="badge badge-p2">Medium-High Priority</span></strong>
+        <ul style="margin:10px 0 0">
+          <li>This bug affects one of the most fundamental things a user can do — selecting shapes — on a device category that is growing, not shrinking.</li>
+          <li>The problem appeared when the circle-selection tool was first introduced, meaning it has been present from the start and a fix is well within reach.</li>
+          <li>The bug is easy to reproduce and well understood — it does not require extensive investigation, so the effort to fix it is low relative to how many users it affects.</li>
+          <li>Leaving it unfixed sends a signal that the tablet experience is second-class, which could affect adoption among educators and visual professionals who favor tablets.</li>
+        </ul>
+      </div>
+
+      <h2>7. Questions for the Development Team</h2>
+      <p>Before approving this work, a Product Owner should get clear answers to the following:</p>
+
+      <h3>1. Does fixing this for tablets risk breaking anything for desktop or phone users?</h3>
+      <p>
+        The circle-selection tool behaves differently depending on screen size, and the fix will need to change
+        that behavior for tablets specifically. Understanding whether the change is safely contained — or whether
+        it could unintentionally affect users on other devices — is essential before committing to the work.
+      </p>
+
+      <h3>2. How do we know when this is truly fixed? What does a passing test look like?</h3>
+      <p>
+        A clear definition of "done" matters here. The team should be able to describe a specific scenario —
+        for example, "draw a loop around three shapes on a tablet screen, release, and all three remain selected
+        with the style options visible" — that can be tested consistently before the fix goes live.
+      </p>
+
+      <h3>3. Are there other tools or interactions in the tablet view that share this same underlying problem?</h3>
+      <p>
+        If the tablet layout has a broader issue with how it handles selections, fixing just the circle-selection
+        tool may leave similar problems in place elsewhere. Knowing whether this is an isolated bug or a symptom
+        of something bigger will help the team decide whether a narrow fix is enough, or whether a wider review
+        of the tablet experience is warranted.
+      </p>
+
+      <h2>8. Why Keeping This Issue Open Matters</h2>
+      <p>
+        Bugs like this one are more than just individual annoyances — they are signals about where the product
+        needs to grow. Keeping issue #10882 open serves several important purposes:
+      </p>
+      <ul>
+        <li><strong>It keeps the conversation alive.</strong> As more users encounter this bug on tablets and report similar experiences, the thread becomes a valuable collection of real-world feedback. Each comment adds context that helps the team understand how widespread the problem truly is.</li>
+        <li><strong>It tracks progress honestly.</strong> Open issues are a transparent record of known limitations. Closing an issue prematurely — before the underlying problem is fully resolved — risks the bug coming back silently in a future update, with no trail to investigate from.</li>
+        <li><strong>It invites community contributions.</strong> Excalidraw is free and built openly by volunteers and contributors around the world. Many of those contributors look for well-documented, focused bugs to work on. A clearly described issue is an open invitation for someone in the community to step in and help — at no cost to the core team.</li>
+        <li><strong>It reflects a commitment to quality.</strong> Users who discover that their bug report is being actively tracked — rather than quietly closed — feel heard. That trust is foundational to a healthy community and to long-term loyalty to the product.</li>
+      </ul>
+      <p>
+        Excalidraw improves every day because its maintainers and contributors treat each reported issue as an
+        opportunity to make the tool more reliable, more inclusive, and more delightful to use. Issue #10882 is
+        exactly that kind of opportunity.
+      </p>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    Excalidraw Issue Analysis &mdash; Product Owner Report &mdash; March 2026
+  </footer>
+
+</body>
+</html>

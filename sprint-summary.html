@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sprint Summary — Excalidraw Issue Analysis</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="index.html" class="site-logo">Excalidraw Issue Analysis</a>
+      <nav class="site-nav">
+        <a href="sprint-summary.html">Sprint Summary</a>
+        <a href="priority-matrix.html">Priority Matrix</a>
+        <a href="issue-brief-10882.html">Issue Brief</a>
+        <a href="exploration-log.html">Exploration Log</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <a href="index.html" class="back-link">← Back to Home</a>
+      <div class="page-label">Sprint Planning</div>
+      <h1>Excalidraw — Sprint Planning Summary</h1>
+      <p class="meta">
+        <strong>Date:</strong> March 8, 2026 &nbsp;·&nbsp;
+        <strong>Prepared from:</strong> 13 open GitHub issues (<code>excalidraw/excalidraw</code>) &nbsp;·&nbsp;
+        <strong>Report scope:</strong> Issues opened March 1–8, 2026
+      </p>
+    </div>
+
+    <article class="content">
+
+      <h2>1. Overview</h2>
+      <p>
+        The current open issue backlog reveals a product under active use but facing reliability concerns in its core
+        drawing experience. The most critical signal is the presence of two independent data loss reports within the
+        same week, suggesting a potential systemic problem with how Excalidraw persists and restores user content.
+        Alongside data loss, performance degradation on Firefox with dark mode and broken drawing input under fast
+        cursor movement indicate that foundational stability work should take precedence over new features this sprint.
+      </p>
+
+      <h2>2. Key Themes</h2>
+
+      <h3>Theme 1 — Data Loss &amp; Reliability</h3>
+      <p>
+        Two separate users reported losing all their drawing content with no recovery path (#10907, #10915).
+        These are not edge cases — they affect any user who exports, exits, or pauses their session.
+        This is the highest-trust issue in the backlog.
+      </p>
+
+      <h3>Theme 2 — Core Drawing Interaction Bugs</h3>
+      <p>
+        Three bugs directly affect the act of drawing: cursor speed causing broken strokes (#10876),
+        inverted scaling with shift+scroll (#10898), and lasso selection failing in Compact Mode (#10882).
+        These hit the product's primary value proposition.
+      </p>
+
+      <h3>Theme 3 — Performance Degradation</h3>
+      <p>
+        Dark theme on Firefox causes severe lag during object manipulation (#10875). With Firefox holding
+        significant browser market share, this is a wide-impact regression that affects everyday use.
+      </p>
+
+      <h3>Theme 4 — Mobile &amp; End-User UX</h3>
+      <p>
+        The request for a Full Screen button on Android (#10913) reflects growing mobile usage.
+        As Excalidraw is adopted in educational and professional contexts on tablets, mobile experience
+        is becoming a customer expectation, not a nice-to-have.
+      </p>
+
+      <h3>Theme 5 — File Format &amp; Error Messaging</h3>
+      <p>
+        Issue #10871 exposes a gap in the file loading pipeline where SVG content with a
+        <code>.excalidraw</code> extension produces a cryptic, unhelpful error. The reporter provided a
+        full root cause analysis pointing to <code>blob.ts</code>, making this an actionable and well-scoped fix.
+      </p>
+
+      <h2>3. Recommended Sprint Priorities</h2>
+
+      <h3><span class="badge badge-p1">P1</span> — #10907 &amp; #10915 | Data Loss on Export / Session Exit</h3>
+      <p>
+        <strong>Justification:</strong> Two data loss reports in one week is a pattern, not a coincidence.
+        Investigate the localStorage persistence layer, export flow, and session restoration logic as a single
+        coordinated effort. Data loss is the highest-severity class of bug — it directly erodes user trust and retention.
+      </p>
+
+      <h3><span class="badge badge-p1">P1</span> — #10875 | Dark Theme Performance on Firefox</h3>
+      <p>
+        <strong>Justification:</strong> With 4 community comments and a clear reproduction path (enable dark theme
+        → drag/stretch objects), this is a confirmed regression affecting a large user segment.
+        Firefox + dark mode is not an exotic configuration.
+      </p>
+
+      <h3><span class="badge badge-p2">P2</span> — #10876 | Drawing Breaks When Moving Cursor Fast</h3>
+      <p>
+        <strong>Justification:</strong> The core drawing loop failing under normal fast usage is unacceptable
+        for a drawing tool. This issue also has 4 comments, confirming it affects multiple users across
+        different environments.
+      </p>
+
+      <h3><span class="badge badge-p2">P2</span> — #10871 | Cryptic Error for SVG Files with .excalidraw Extension</h3>
+      <p>
+        <strong>Justification:</strong> The reporter already diagnosed the exact root cause in <code>blob.ts</code>
+        and proposed a fix. This is a high-value, low-effort issue that can likely be resolved in a single PR
+        and significantly improves the user experience around file loading errors.
+      </p>
+
+      <h3><span class="badge badge-p3">P3</span> — #10913 | Full Screen Button for Android (Chrome)</h3>
+      <p>
+        <strong>Justification:</strong> Mobile and tablet users are end customers, and maximizing canvas space
+        is a fundamental need for drawing apps on those devices. The Fullscreen API is a well-supported browser
+        standard and implementation complexity is moderate.
+      </p>
+
+      <h2>4. Risks and Blockers</h2>
+
+      <div class="callout danger">
+        <strong>Data Loss May Be Systemic.</strong> The two data loss reports (#10907, #10915) arrived independently,
+        within days of each other, and describe different triggers (export vs. session exit). This raises the risk
+        that the root cause is deeper than a single bug — potentially in the localStorage management, session hydration,
+        or file parsing pipeline. <strong>Recommendation:</strong> Treat these as one investigation before scoping individual fixes.
+      </div>
+
+      <div class="callout warning">
+        <strong>No Labels on Any Issues.</strong> All 13 issues have zero labels applied. This indicates a triage gap —
+        without labels, there is no automated filtering, no SLA tracking, and no way to query issues by type or component.
+        <strong>Recommendation:</strong> Establish a labeling convention (e.g., <code>bug</code>, <code>feature</code>,
+        <code>data-loss</code>, <code>performance</code>) and retroactively label these issues.
+      </div>
+
+      <div class="callout warning">
+        <strong>Spam in the Issue Tracker.</strong> Two issues (#10919, #10873) are clearly spam or off-topic.
+        An open issue tracker without moderation creates noise that slows triage.
+        <strong>Recommendation:</strong> Close both immediately and consider adding an issue template to reduce future spam.
+      </div>
+
+      <div class="callout">
+        <strong>Firefox-Specific Regression (#10875).</strong> Performance bugs that are browser-specific are difficult
+        to reproduce in all environments and may require Firefox-targeted profiling. If the team primarily develops on
+        Chrome, this risk may be underestimated.
+      </div>
+
+      <h2>5. Metrics</h2>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value">13</div>
+          <div class="metric-label">Total issues analyzed</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">7</div>
+          <div class="metric-label">Bug reports (54%)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">4</div>
+          <div class="metric-label">Feature requests (31%)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">2</div>
+          <div class="metric-label">Spam / unclear (15%)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">4</div>
+          <div class="metric-label">P1 issues</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">4</div>
+          <div class="metric-label">P2 issues</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">5</div>
+          <div class="metric-label">P3 issues</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">8</div>
+          <div class="metric-label">Issues with 0 comments</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">5</div>
+          <div class="metric-label">Issues with 1+ comments</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">3.2</div>
+          <div class="metric-label">Avg. issue age (days)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">2</div>
+          <div class="metric-label">Data loss reports</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">1</div>
+          <div class="metric-label">Performance issues</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Note:</strong> The short average age (3.2 days) reflects that this snapshot covers only the most
+        recent issues. A full backlog analysis across all open issues would provide a more complete health picture.
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    Excalidraw Issue Analysis &mdash; Product Owner Report &mdash; March 2026
+  </footer>
+
+</body>
+</html>

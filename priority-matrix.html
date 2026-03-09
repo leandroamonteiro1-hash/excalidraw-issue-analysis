@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Priority Matrix — Excalidraw Issue Analysis</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="index.html" class="site-logo">Excalidraw Issue Analysis</a>
+      <nav class="site-nav">
+        <a href="sprint-summary.html">Sprint Summary</a>
+        <a href="priority-matrix.html">Priority Matrix</a>
+        <a href="issue-brief-10882.html">Issue Brief</a>
+        <a href="exploration-log.html">Exploration Log</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <a href="index.html" class="back-link">← Back to Home</a>
+      <div class="page-label">Triage · Prioritization</div>
+      <h1>Excalidraw Issues — Priority Matrix</h1>
+      <p class="meta">
+        Generated from <code>issues.json</code> &nbsp;·&nbsp;
+        <strong>13 open issues</strong> &nbsp;·&nbsp; March 2026
+      </p>
+    </div>
+
+    <article class="content">
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:70px">Priority</th>
+            <th style="width:60px">#</th>
+            <th>Title</th>
+            <th style="width:80px">Impact</th>
+            <th style="width:80px">Effort</th>
+            <th>Justification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td>#10907</td>
+            <td><strong>Lost My Excalidraw Content</strong></td>
+            <td>High</td>
+            <td>Medium</td>
+            <td>Silent data loss after export/reload destroys user trust and is the most severe class of bug.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td>#10915</td>
+            <td><strong>Lost excalidraw content after exiting and coming back</strong></td>
+            <td>High</td>
+            <td>Medium</td>
+            <td>Session data disappearing on exit is a critical reliability failure affecting any user who pauses their work.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td>#10875</td>
+            <td><strong>Problems occur when turning on dark theme</strong></td>
+            <td>High</td>
+            <td>Medium</td>
+            <td>Severe UI lag on Firefox with dark theme enabled impacts a broad segment of users on one of the most popular browsers.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td>#10876</td>
+            <td><strong>Drawing Breaks When Moving Cursor</strong></td>
+            <td>High</td>
+            <td>Medium</td>
+            <td>The core drawing interaction is broken under normal fast usage, making the tool's primary function unreliable.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p2">P2</span></td>
+            <td>#10871</td>
+            <td><strong>SVG files with .excalidraw extension produce cryptic error</strong></td>
+            <td>Medium</td>
+            <td>Low</td>
+            <td>The reporter already identified the exact root cause and suggested a fix in <code>blob.ts</code>, making this a high-value, low-effort improvement.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p2">P2</span></td>
+            <td>#10882</td>
+            <td><strong>Lasso Selection &amp; Selection Bug in Compact Mode</strong></td>
+            <td>Medium</td>
+            <td>Medium</td>
+            <td>A broken selection tool in Compact Mode affects a meaningful subset of users who rely on lasso for multi-element workflows.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p2">P2</span></td>
+            <td>#10898</td>
+            <td><strong>Bug — inverted scaling</strong></td>
+            <td>Medium</td>
+            <td>Medium</td>
+            <td>Inverted scaling during a specific key combo (shift+scroll) is a reproducible bug that breaks expected canvas behavior.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p2">P2</span></td>
+            <td>#10913</td>
+            <td><strong>Add "Full Screen" Button for Excalidraw on Android</strong></td>
+            <td>Medium</td>
+            <td>Medium</td>
+            <td>Mobile users are end customers who need full canvas space to draw effectively, making this a meaningful UX investment for a growing platform.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p3">P3</span></td>
+            <td>#10896</td>
+            <td><strong>Add Spotify and YouTube Music to embed whitelist</strong></td>
+            <td>Low</td>
+            <td>Low</td>
+            <td>Embedding music is a niche use case that only requires adding domains to an allowlist with no impact on core drawing functionality.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p3">P3</span></td>
+            <td>#10886</td>
+            <td><strong>Add .cursorrules file for Cursor IDE contributors</strong></td>
+            <td>Low</td>
+            <td>Low</td>
+            <td>A developer-experience improvement for Cursor IDE users that has zero end-user impact and can be done as a community contribution.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p3">P3</span></td>
+            <td>#10917</td>
+            <td><strong>Keyboard shortcut to overlay Excalidraw on any webpage</strong></td>
+            <td>Low</td>
+            <td>Low</td>
+            <td>Keyboard overlays are a developer/power-user niche with no relevance to the core painting and diagramming product.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p3">P3</span></td>
+            <td>#10919</td>
+            <td><strong>Cal Ai</strong></td>
+            <td>Low</td>
+            <td>—</td>
+            <td>Issue body contains only an iframe embed with no actionable description; likely spam or a test submission.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p3">P3</span></td>
+            <td>#10873</td>
+            <td><strong>احمد المحنا</strong></td>
+            <td>Low</td>
+            <td>—</td>
+            <td>Issue body is unrelated to Excalidraw; should be closed as spam.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Summary</h2>
+
+      <table style="max-width: 480px">
+        <thead>
+          <tr>
+            <th>Priority</th>
+            <th>Count</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-p1">P1</span></td>
+            <td><strong>4</strong></td>
+            <td>Fix immediately — data loss and core interaction bugs</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p2">P2</span></td>
+            <td><strong>4</strong></td>
+            <td>Schedule next sprint — reproducible bugs with known scope + quick-win feature</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-p3">P3</span></td>
+            <td><strong>5</strong></td>
+            <td>Backlog — niche features, contributor tooling, and spam to close</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    Excalidraw Issue Analysis &mdash; Product Owner Report &mdash; March 2026
+  </footer>
+
+</body>
+</html>
