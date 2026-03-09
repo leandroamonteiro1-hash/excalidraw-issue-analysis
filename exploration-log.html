@@ -140,15 +140,20 @@
       </div>
 
       <div class="qa-block">
-        <div class="qa-question">What social medias are implemented in Excalidraw, and how many accounts can I use without creating a new login?</div>
+        <div class="qa-question">How does the real-time collaboration system work? What happens when two users share a session?</div>
         <div class="qa-answer">
           <p>
-            Four social links are present: <strong>GitHub</strong>, <strong>X (Twitter)</strong>,
-            <strong>Discord</strong>, and <strong>YouTube</strong> (YouTube only in the Command Palette,
-            not the hamburger menu). There is <strong>no login or account system</strong> in the free app —
-            drawings save to localStorage, collaboration works via shareable links, and nothing requires sign-in.
-            The only "Sign up / Sign in" button redirects to Excalidraw+ (paid, separate product).
-            You can use unlimited "sessions" since there are no accounts.
+            Collaboration is built on two layers working together:
+          </p>
+          <ol>
+            <li><strong>Room creation</strong> — when a user clicks "Live collaboration", the app generates a unique room ID and a random encryption key. Both are embedded in the shareable URL — the server never sees the key.</li>
+            <li><strong>WebSocket sync</strong> — all participants connect to a Firebase-backed WebSocket server (<code>excalidraw-app/collab/Collab.tsx</code>). Every canvas change (element added, moved, deleted) is serialized and broadcast to all room members in real time.</li>
+            <li><strong>End-to-end encryption</strong> — data is encrypted in the browser before being sent, using the key from the URL. Even the server operator cannot read the drawing contents.</li>
+            <li><strong>Reconciliation</strong> — when a late-joining user enters the room, they receive the current scene state from the server. Conflicts are resolved by last-write-wins on a per-element basis.</li>
+          </ol>
+          <p>
+            There is no account system — access to a session is controlled entirely by possessing the shareable URL.
+            Closing the tab ends your participation; the room persists as long as at least one user remains connected.
           </p>
         </div>
       </div>
